@@ -42,6 +42,16 @@ const RelationshipMatrix: React.FC<RelationshipMatrixProps> = ({
     onChange(newMatrix);
   };
 
+  // Clear a cell (handle removal of value)
+  const handleClearCell = (row: number, col: number) => {
+    if (row === col) return; // Skip diagonal cells
+    
+    const newMatrix = [...matrix.map(row => [...row])];
+    newMatrix[row][col] = "";
+    newMatrix[col][row] = ""; // Mirror the change (symmetric matrix)
+    onChange(newMatrix);
+  };
+
   const getRelValueClass = (value: string) => {
     if (!value) return "";
     return `rel-value-${value}`;
@@ -90,14 +100,20 @@ const RelationshipMatrix: React.FC<RelationshipMatrixProps> = ({
                         "-"
                       ) : (
                         <Select
-                          value={matrix[row]?.[col] || ""}
-                          onValueChange={(value) => handleCellChange(row, col, value)}
+                          value={matrix[row]?.[col] || "none"}
+                          onValueChange={(value) => {
+                            if (value === "none") {
+                              handleClearCell(row, col);
+                            } else {
+                              handleCellChange(row, col, value);
+                            }
+                          }}
                         >
                           <SelectTrigger className="w-full h-8 border-0 bg-transparent">
-                            <SelectValue placeholder="Select" />
+                            <SelectValue placeholder="-" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="">-</SelectItem>
+                            <SelectItem value="none">-</SelectItem>
                             <SelectItem value="A">A (5)</SelectItem>
                             <SelectItem value="E">E (4)</SelectItem>
                             <SelectItem value="I">I (3)</SelectItem>
