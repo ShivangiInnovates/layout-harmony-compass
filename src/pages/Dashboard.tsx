@@ -1,0 +1,290 @@
+
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import { LogOut, Save } from "lucide-react";
+import DepartmentInput from "@/components/DepartmentInput";
+import RelationshipMatrix from "@/components/RelationshipMatrix";
+import SequenceInput from "@/components/SequenceInput";
+import ResultsDisplay from "@/components/ResultsDisplay";
+import VisualizationDisplay from "@/components/VisualizationDisplay";
+import {
+  convertRelToTcr,
+  calculateTcrScores,
+  calculateLayoutScore,
+  initializeRelMatrix,
+  generateSampleData,
+  DEFAULT_DEPARTMENTS
+} from "@/utils/layoutUtils";
+
+// Mock database for saved layouts
+let MOCK_USER_LAYOUTS: Record<string, any[]> = {
+  "1": [], // Admin
+  "2": []  // Regular user
+};
+
+const Dashboard = () => {
+  const { user, logout } = useAuth();
+  const { toast } = useToast();
+  
+  // State for departments and matrix
+  const [departments, setDepartments] = useState<string[]>(DEFAULT_DEPARTMENTS);
+  const [relMatrix, setRelMatrix] = useState<string[][]>([]);
+  const [sequence, setSequence] = useState<number[]>([]);
+  
+  // State for computed results
+  const [tcrMatrix, setTcrMatrix] = useState<number[][]>([]);
+  const [departmentScores, setDepartmentScores] = useState<number[]>([]);
+  const [layoutScore, setLayoutScore] = useState<number>(0);
+  
+  // State for UI
+  const [resultsVisible, setResultsVisible] = useState<boolean>(false);
+  const [savedLayouts, setSavedLayouts] = useState<any[]>([]);
+  
+  // Initialize with sample data
+  useEffect(() => {
+    const { departments, relMatrix, sequence } = generateSampleData();
+    setDepartments(departments);
+    setRelMatrix(initializeRelMatrix(departments.length));
+    setSequence(sequence);
+    
+    // Load saved layouts for the current user
+    if (user) {
+      setSavedLayouts(MOCK_USER_LAYOUTS[user.id] || []);
+    }
+  }, [user?.id]);
+  
+  // Recalculate when departments change
+  useEffect(() => {
+    if (departments.length > 0) {
+      // If matrix doesn't match department size, initialize it
+      if (relMatrix.length !== departments.length) {
+        setRelMatrix(initializeRelMatrix(departments.length));
+      }
+      
+      // Reset sequence if department count changes
+      if (sequence.length !== departments.length) {
+        setSequence(Array(departments.length).fill(0).map((_, i) => i));
+      }
+    }
+  }, [departments]);
+
+  // Calculate results
+  const calculateResults = () => {
+    // Validate the REL matrix
+    const hasInvalidCells = relMatrix.some((row, i) => 
+      row.some((cell, j) => i !== j && !cell)
+    );
+    
+    if (hasInvalidCells) {
+      toast({
+        title: "Incomplete Matrix",
+        description: "Please fill in all cells in the REL matrix",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Convert REL values to TCR
+    const tcr = convertRelToTcr(relMatrix);
+    setTcrMatrix(tcr);
+    
+    // Calculate scores per department
+    const scores = calculateTcrScores(tcr, sequence);
+    setDepartmentScores(scores);
+    
+    // Calculate overall layout score
+    const total = calculateLayoutScore(tcr, sequence);
+    setLayoutScore(total);
+    
+    setResultsVisible(true);
+    
+    toast({
+      title: "Calculation Complete",
+      description: `Layout Score: ${total}`,
+    });
+  };
+
+  // Reset everything
+  const handleReset = () => {
+    const { departments, relMatrix, sequence } = generateSampleData();
+    setDepartments(departments);
+    setRelMatrix(relMatrix);
+    setSequence(sequence);
+    setResultsVisible(false);
+    
+    toast({
+      title: "Reset Complete",
+      description: "All inputs have been reset to default values",
+    });
+  };
+
+  // Save current layout
+  const saveCurrentLayout = () => {
+    if (!user) return;
+    
+    const newLayout = {
+      id: `layout_${Date.now()}`,
+      name: `Layout ${savedLayouts.length + 1}`,
+      departments: [...departments],
+      relMatrix: relMatrix.map(row => [...row]),
+      sequence: [...sequence],
+      score: layoutScore,
+      date: new Date().toISOString(),
+    };
+    
+    // Update local state
+    const updatedLayouts = [...savedLayouts, newLayout];
+    setSavedLayouts(updatedLayouts);
+    
+    // Update mock database
+    MOCK_USER_LAYOUTS[user.id] = updatedLayouts;
+    
+    toast({
+      title: "Layout Saved",
+      description: `Layout saved successfully as "${newLayout.name}"`,
+    });
+  };
+
+  // Load a saved layout
+  const loadLayout = (layout: any) => {
+    setDepartments(layout.departments);
+    setRelMatrix(layout.relMatrix);
+    setSequence(layout.sequence);
+    
+    // Recalculate results
+    const tcr = convertRelToTcr(layout.relMatrix);
+    setTcrMatrix(tcr);
+    
+    const scores = calculateTcrScores(tcr, layout.sequence);
+    setDepartmentScores(scores);
+    
+    const total = calculateLayoutScore(tcr, layout.sequence);
+    setLayoutScore(total);
+    
+    setResultsVisible(true);
+    
+    toast({
+      title: "Layout Loaded",
+      description: `Layout "${layout.name}" loaded successfully`,
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="bg-card border-b">
+        <div className="container py-4 flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-primary">Layout Harmony Compass</h1>
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <div className="font-medium">{user?.name || user?.email}</div>
+              <div className="text-sm text-muted-foreground">
+                {user?.role === "admin" ? "Administrator" : "User"}
+              </div>
+            </div>
+            <Button variant="outline" size="icon" onClick={logout}>
+              <LogOut className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="container py-8">
+        <div className="grid gap-8">
+          {/* Department Configuration */}
+          <div className="grid gap-6 md:grid-cols-2">
+            <DepartmentInput 
+              departments={departments} 
+              onChange={setDepartments} 
+              onReset={handleReset} 
+            />
+            <SequenceInput 
+              departmentCount={departments.length} 
+              sequence={sequence} 
+              onChange={setSequence} 
+            />
+          </div>
+          
+          {/* Relationship Matrix */}
+          <RelationshipMatrix 
+            departments={departments} 
+            matrix={relMatrix} 
+            onChange={setRelMatrix} 
+          />
+          
+          {/* Action Buttons */}
+          <div className="flex justify-between">
+            <Button variant="outline" onClick={handleReset}>
+              Reset All
+            </Button>
+            <div className="flex gap-2">
+              {resultsVisible && (
+                <Button 
+                  variant="outline" 
+                  onClick={saveCurrentLayout}
+                >
+                  <Save className="h-4 w-4 mr-2" /> Save Layout
+                </Button>
+              )}
+              <Button onClick={calculateResults}>
+                Calculate Layout Score
+              </Button>
+            </div>
+          </div>
+          
+          {/* Results Section */}
+          {resultsVisible && (
+            <div className="mt-4 space-y-8">
+              <h2 className="text-xl font-semibold">Layout Analysis Results</h2>
+              
+              <ResultsDisplay 
+                departments={departments}
+                relMatrix={relMatrix}
+                tcrMatrix={tcrMatrix}
+                sequence={sequence}
+                scores={departmentScores}
+                layoutScore={layoutScore}
+              />
+              
+              <VisualizationDisplay 
+                departments={departments}
+                sequence={sequence}
+                tcrMatrix={tcrMatrix}
+              />
+            </div>
+          )}
+          
+          {/* Saved Layouts */}
+          {savedLayouts.length > 0 && (
+            <div className="mt-8">
+              <h2 className="text-xl font-semibold mb-4">Saved Layouts</h2>
+              <div className="grid gap-4 md:grid-cols-3">
+                {savedLayouts.map(layout => (
+                  <div 
+                    key={layout.id} 
+                    className="bg-card border rounded-lg p-4 cursor-pointer hover:border-primary transition-colors"
+                    onClick={() => loadLayout(layout)}
+                  >
+                    <h3 className="font-medium">{layout.name}</h3>
+                    <div className="text-sm text-muted-foreground mb-2">
+                      {new Date(layout.date).toLocaleDateString()}
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Departments: {layout.departments.length}</span>
+                      <span className="font-medium">Score: {layout.score}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
