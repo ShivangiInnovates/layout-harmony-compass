@@ -114,12 +114,12 @@ const RelationshipMatrix: React.FC<RelationshipMatrixProps> = ({
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="none">-</SelectItem>
-                            <SelectItem value="A">A (5)</SelectItem>
-                            <SelectItem value="E">E (4)</SelectItem>
-                            <SelectItem value="I">I (3)</SelectItem>
-                            <SelectItem value="O">O (2)</SelectItem>
-                            <SelectItem value="U">U (1)</SelectItem>
-                            <SelectItem value="X">X (-1)</SelectItem>
+                            <SelectItem value="A">A (6)</SelectItem>
+                            <SelectItem value="E">E (5)</SelectItem>
+                            <SelectItem value="I">I (4)</SelectItem>
+                            <SelectItem value="O">O (3)</SelectItem>
+                            <SelectItem value="U">U (2)</SelectItem>
+                            <SelectItem value="X">X (1)</SelectItem>
                           </SelectContent>
                         </Select>
                       )}

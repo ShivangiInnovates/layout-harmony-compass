@@ -141,11 +141,11 @@ const VisualizationDisplay: React.FC<VisualizationDisplayProps> = ({
               <div key={value} className="flex items-center gap-1">
                 <div className={`w-4 h-1 ${getTcrColorClass(value)}`}></div>
                 <span className="text-xs">
-                  {value === 5 ? "A (5)" : 
-                   value === 4 ? "E (4)" : 
-                   value === 3 ? "I (3)" : 
-                   value === 2 ? "O (2)" : 
-                   value === 1 ? "U (1)" : "X (-1)"}
+                  {value === 6 ? "A (6)" : 
+                   value === 5 ? "E (5)" : 
+                   value === 4 ? "I (4)" : 
+                   value === 3 ? "O (3)" : 
+                   value === 2 ? "U (2)" : "X (1)"}
                 </span>
               </div>
             ))}

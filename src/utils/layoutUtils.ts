@@ -1,12 +1,12 @@
 
 // REL values and their numeric equivalents for TCR calculation
 export const REL_VALUES: Record<string, number> = {
-  "A": 5,  // Absolutely necessary
-  "E": 4,  // Especially important
-  "I": 3,  // Important
-  "O": 2,  // Ordinary closeness
-  "U": 1,  // Unimportant
-  "X": -1  // Undesirable
+  "A": 6,  // Absolutely necessary
+  "E": 5,  // Especially important
+  "I": 4,  // Important
+  "O": 3,  // Ordinary closeness
+  "U": 2,  // Unimportant
+  "X": 1   // Undesirable
 };
 
 // Default department names
@@ -94,13 +94,13 @@ export function initializeRelMatrix(size: number): string[][] {
 
 // Helper to generate a color code based on TCR value
 export function getTcrColorClass(value: number): string {
-  if (value === 5) return "bg-green-500 text-white";
-  if (value === 4) return "bg-blue-500 text-white";
-  if (value === 3) return "bg-yellow-500";
-  if (value === 2) return "bg-orange-500 text-white";
-  if (value === 1) return "bg-gray-300";
-  if (value === -1) return "bg-red-500 text-white";
-  return ""; // Default
+  if (value === 6) return "bg-green-500 text-white";
+  if (value === 5) return "bg-blue-500 text-white";
+  if (value === 4) return "bg-yellow-500";
+  if (value === 3) return "bg-orange-500 text-white";
+  if (value === 2) return "bg-gray-300";
+  if (value === 1) return "bg-red-500 text-white";
+  return "bg-gray-100";
 }
 
 // Helper to format and validate sequence
