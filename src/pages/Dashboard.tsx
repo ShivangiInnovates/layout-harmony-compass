@@ -5,6 +5,12 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { LogOut, Save } from "lucide-react";
 import DepartmentInput from "@/components/DepartmentInput";
+
+interface Department {
+  name: string;
+  score: number | '';
+}
+
 import RelationshipMatrix from "@/components/RelationshipMatrix";
 import SequenceInput from "@/components/SequenceInput";
 import ResultsDisplay from "@/components/ResultsDisplay";
@@ -12,6 +18,7 @@ import VisualizationDisplay from "@/components/VisualizationDisplay";
 import {
   convertRelToTcr,
   calculateTcrScores,
+  calculateRelationshipTcrScores,
   calculateLayoutScore,
   initializeRelMatrix,
   generateSampleData,
@@ -29,7 +36,7 @@ const Dashboard = () => {
   const { toast } = useToast();
   
   // State for departments and matrix
-  const [departments, setDepartments] = useState<string[]>(DEFAULT_DEPARTMENTS);
+  const [departments, setDepartments] = useState<Department[]>(DEFAULT_DEPARTMENTS.map(name => ({ name, score: 0 })));
   const [relMatrix, setRelMatrix] = useState<string[][]>([]);
   const [sequence, setSequence] = useState<number[]>([]);
   
@@ -45,7 +52,7 @@ const Dashboard = () => {
   // Initialize with sample data
   useEffect(() => {
     const { departments, relMatrix, sequence } = generateSampleData();
-    setDepartments(departments);
+    setDepartments(departments.map((name: string) => ({ name, score: 0 })));
     setRelMatrix(initializeRelMatrix(departments.length));
     setSequence(sequence);
     
@@ -90,8 +97,8 @@ const Dashboard = () => {
     const tcr = convertRelToTcr(relMatrix);
     setTcrMatrix(tcr);
     
-    // Calculate scores per department
-    const scores = calculateTcrScores(tcr, sequence);
+    // Calculate scores per department based on relationship counts (same as TCR matrix)
+    const scores = calculateRelationshipTcrScores(relMatrix);
     setDepartmentScores(scores);
     
     // Calculate overall layout score
@@ -109,7 +116,7 @@ const Dashboard = () => {
   // Reset everything
   const handleReset = () => {
     const { departments, relMatrix, sequence } = generateSampleData();
-    setDepartments(departments);
+    setDepartments(departments.map((name: string) => ({ name, score: 0 })));
     setRelMatrix(relMatrix);
     setSequence(sequence);
     setResultsVisible(false);
@@ -195,22 +202,17 @@ const Dashboard = () => {
       <div className="container py-8">
         <div className="grid gap-8">
           {/* Department Configuration */}
-          <div className="grid gap-6 md:grid-cols-2">
+          <div>
             <DepartmentInput 
               departments={departments} 
               onChange={setDepartments} 
               onReset={handleReset} 
             />
-            <SequenceInput 
-              departmentCount={departments.length} 
-              sequence={sequence} 
-              onChange={setSequence} 
-            />
           </div>
           
           {/* Relationship Matrix */}
           <RelationshipMatrix 
-            departments={departments} 
+            departments={departments.map(department => department.name)} 
             matrix={relMatrix} 
             onChange={setRelMatrix} 
           />
@@ -241,16 +243,17 @@ const Dashboard = () => {
               <h2 className="text-xl font-semibold">Layout Analysis Results</h2>
               
               <ResultsDisplay 
-                departments={departments}
+                departments={departments.map(d => d.name)}
                 relMatrix={relMatrix}
                 tcrMatrix={tcrMatrix}
                 sequence={sequence}
                 scores={departmentScores}
                 layoutScore={layoutScore}
+                onSequenceChange={setSequence}
               />
               
               <VisualizationDisplay 
-                departments={departments}
+                departments={departments.map(d => d.name)}
                 sequence={sequence}
                 tcrMatrix={tcrMatrix}
               />

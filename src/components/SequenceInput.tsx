@@ -4,7 +4,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { formatSequence } from "@/utils/layoutUtils";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, Shuffle } from "lucide-react";
 
 interface SequenceInputProps {
@@ -59,18 +58,12 @@ const SequenceInput: React.FC<SequenceInputProps> = ({
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Department Sequence</CardTitle>
-        <CardDescription>
-          Enter the layout sequence for your departments (comma-separated numbers)
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div>
-          <Label htmlFor="sequence" className="block mb-2">
-            Department Sequence (1-based):
-          </Label>
+    <div className="space-y-4">
+      <div>
+        <Label htmlFor="sequence" className="block mb-2">
+          Department Sequence (1-based):
+        </Label>
+        <div className="flex gap-2">
           <Input
             id="sequence"
             value={sequenceInput}
@@ -78,32 +71,32 @@ const SequenceInput: React.FC<SequenceInputProps> = ({
             placeholder="e.g., 1, 3, 2, 5, 4, 7, 6, 8"
             className={error ? "border-destructive" : ""}
           />
-          {error && <p className="text-destructive text-sm mt-1">{error}</p>}
+          <Button onClick={handleSubmit} size="sm">
+            Apply
+          </Button>
         </div>
-        
-        <div>
-          <Label className="block mb-2">Sequence Visualization:</Label>
-          <div className="flex flex-wrap gap-2">
-            {sequence.map((deptIndex, i) => (
-              <div key={i} className="flex items-center">
-                {i > 0 && <ArrowRight className="h-4 w-4 mx-1 text-muted-foreground" />}
-                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
-                  {deptIndex + 1}
-                </div>
+        {error && <p className="text-destructive text-sm mt-1">{error}</p>}
+      </div>
+      
+      <div>
+        <div className="flex justify-between items-center mb-2">
+          <Label className="block">Sequence Visualization:</Label>
+          <Button variant="outline" size="sm" onClick={generateRandomSequence}>
+            <Shuffle className="h-3 w-3 mr-1" /> Random
+          </Button>
+        </div>
+        <div className="flex flex-wrap gap-2 p-2 bg-background rounded-md border">
+          {sequence.map((deptIndex, i) => (
+            <div key={i} className="flex items-center">
+              {i > 0 && <ArrowRight className="h-4 w-4 mx-1 text-muted-foreground" />}
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
+                {deptIndex + 1}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
-      </CardContent>
-      <CardFooter className="flex justify-between">
-        <Button variant="outline" onClick={generateRandomSequence}>
-          <Shuffle className="h-4 w-4 mr-2" /> Random
-        </Button>
-        <Button onClick={handleSubmit}>
-          Apply Sequence
-        </Button>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 };
 

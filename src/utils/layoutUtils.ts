@@ -28,6 +28,31 @@ export function convertRelToTcr(relMatrix: string[][]): number[][] {
   );
 }
 
+// Calculate TCR score per department based on their relationship counts
+export function calculateRelationshipTcrScores(
+  relMatrix: string[][],
+  relationshipValues: string[] = Object.keys(REL_VALUES)
+): number[] {
+  const n = relMatrix.length;
+  const scores: number[] = Array(n).fill(0);
+  
+  // For each department, count occurrences of each relationship type
+  for (let deptIndex = 0; deptIndex < n; deptIndex++) {
+    // Count each relationship type for this department
+    const relationshipCounts = relationshipValues.map(rel => 
+      relMatrix[deptIndex].filter(value => value === rel).length
+    );
+    
+    // Calculate TCR score (relationship count * relationship value)
+    scores[deptIndex] = relationshipCounts.reduce((sum, count, index) => {
+      const relValue = REL_VALUES[relationshipValues[index]] || 0;
+      return sum + (count * relValue);
+    }, 0);
+  }
+  
+  return scores;
+}
+
 // Calculate TCR score per department based on sequence and TCR matrix
 export function calculateTcrScores(tcrMatrix: number[][], sequence: number[]): number[] {
   const n = sequence.length;

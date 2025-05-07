@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -22,6 +21,12 @@ const RelationshipMatrix: React.FC<RelationshipMatrixProps> = ({
   matrix,
   onChange,
 }) => {
+  // Define relationship values in order
+  const relationshipValues = ["A", "E", "I", "O", "U", "X"];
+  
+  // State to track the TCR (numeric counts) matrix
+  const [tcrMatrix, setTcrMatrix] = useState<number[][]>([]);
+
   // Initialize if matrix doesn't match departments length
   useEffect(() => {
     if (matrix.length !== departments.length) {
@@ -30,9 +35,31 @@ const RelationshipMatrix: React.FC<RelationshipMatrixProps> = ({
         .map(() => Array(departments.length).fill(""));
       onChange(newMatrix);
     }
-  }, [departments.length, matrix.length]);
+  }, [departments.length, matrix.length, onChange]);
 
-  // Handle cell change
+  // Update TCR matrix when relationship matrix changes
+  useEffect(() => {
+    // Initialize TCR matrix
+    const newTcrMatrix = departments.map(() => 
+      relationshipValues.map(() => 0) // Initialize count for each relationship type
+    );
+
+    // Count occurrences of each relationship type for each department
+    if (matrix.length > 0) {
+      matrix.forEach((row, rowIndex) => {
+        row.forEach((cell) => {
+          if (cell && relationshipValues.includes(cell)) {
+            const relIndex = relationshipValues.indexOf(cell);
+            newTcrMatrix[rowIndex][relIndex]++;
+          }
+        });
+      });
+    }
+
+    setTcrMatrix(newTcrMatrix);
+  }, [matrix, departments, relationshipValues]);
+
+  // Handle cell change in relationship matrix
   const handleCellChange = (row: number, col: number, value: string) => {
     if (row === col) return; // Skip diagonal cells
     
@@ -52,13 +79,25 @@ const RelationshipMatrix: React.FC<RelationshipMatrixProps> = ({
     onChange(newMatrix);
   };
 
+
+
+  // Calculate TCR (Total Closeness Rating) for each row
+  const calculateRowTcr = (row: number[]): number => {
+    return row.reduce((sum, value, index) => {
+      // Multiply count by the REL value
+      const relValue = REL_VALUES[relationshipValues[index]] || 0;
+      return sum + (value * relValue);
+    }, 0);
+  };
+  
   const getRelValueClass = (value: string) => {
     if (!value) return "";
     return `rel-value-${value}`;
   };
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto space-y-8">
+      {/* Original Relationship Matrix */}
       <div className="p-4 bg-card rounded-lg border shadow-sm">
         <h3 className="font-medium mb-4">Relationship (REL) Matrix</h3>
         <div className="mb-3">
@@ -114,17 +153,58 @@ const RelationshipMatrix: React.FC<RelationshipMatrixProps> = ({
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="none">-</SelectItem>
-                            <SelectItem value="A">A (6)</SelectItem>
-                            <SelectItem value="E">E (5)</SelectItem>
-                            <SelectItem value="I">I (4)</SelectItem>
-                            <SelectItem value="O">O (3)</SelectItem>
-                            <SelectItem value="U">U (2)</SelectItem>
-                            <SelectItem value="X">X (1)</SelectItem>
+                            <SelectItem value="A">A</SelectItem>
+                            <SelectItem value="E">E</SelectItem>
+                            <SelectItem value="I">I</SelectItem>
+                            <SelectItem value="O">O</SelectItem>
+                            <SelectItem value="U">U</SelectItem>
+                            <SelectItem value="X">X</SelectItem>
                           </SelectContent>
                         </Select>
                       )}
                     </td>
                   ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      {/* TCR Matrix */}
+      <div className="p-4 bg-card rounded-lg border shadow-sm">
+        <h3 className="font-medium mb-4">TCR Matrix</h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          The table below shows the count of each relationship type per department and the calculated TCR score.
+        </p>
+        
+        <div className="relative overflow-x-auto">
+          <table className="w-full border-collapse border">
+            <thead>
+              <tr>
+                <th className="border p-2"></th>
+                {relationshipValues.map((rel) => (
+                  <th key={rel} className="border p-2 text-center">
+                    {rel}
+                  </th>
+                ))}
+                <th className="border p-2 text-center">TCR</th>
+              </tr>
+            </thead>
+            <tbody>
+              {departments.map((dept, deptIndex) => (
+                <tr key={deptIndex}>
+                  <th className="border p-2 text-left">
+                    {deptIndex + 1}. {dept}
+                  </th>
+                  {relationshipValues.map((rel, relIndex) => (
+                    <td key={relIndex} className="border p-2 text-center">
+                      {tcrMatrix[deptIndex]?.[relIndex] || 0}
+                    </td>
+                  ))}
+                  <td className="border p-2 text-center font-medium">
+                    {tcrMatrix[deptIndex] ? calculateRowTcr(tcrMatrix[deptIndex]) : 0}
+                  </td>
                 </tr>
               ))}
             </tbody>

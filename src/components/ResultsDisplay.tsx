@@ -2,6 +2,7 @@
 import React, { useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getTcrColorClass } from "@/utils/layoutUtils";
+import SequenceInput from "@/components/SequenceInput";
 
 interface ResultsDisplayProps {
   departments: string[];
@@ -10,6 +11,7 @@ interface ResultsDisplayProps {
   sequence: number[];
   scores: number[];
   layoutScore: number;
+  onSequenceChange: (sequence: number[]) => void;
 }
 
 const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
@@ -19,6 +21,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   sequence,
   scores,
   layoutScore,
+  onSequenceChange,
 }) => {
   // Calculate the maximum possible score for reference
   const maxPossibleScore = useMemo(() => {
@@ -52,43 +55,17 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     <div className="grid gap-6 md:grid-cols-2">
       <Card>
         <CardHeader>
-          <CardTitle>TCR Matrix</CardTitle>
+          <CardTitle>Department Sequence</CardTitle>
           <CardDescription>
-            Numeric representation of department relationships
+            Arrange the layout sequence of your departments
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr>
-                  <th className="layout-matrix-header"></th>
-                  {departments.map((dept, idx) => (
-                    <th key={idx} className="layout-matrix-header text-center w-12">
-                      {idx + 1}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {departments.map((dept, row) => (
-                  <tr key={row}>
-                    <th className="layout-matrix-header text-center">
-                      {row + 1}
-                    </th>
-                    {departments.map((_, col) => (
-                      <td 
-                        key={col} 
-                        className={`layout-matrix-cell ${getTcrColorClass(tcrMatrix[row][col])}`}
-                      >
-                        {row === col ? "-" : tcrMatrix[row][col]}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <SequenceInput 
+            departmentCount={departments.length} 
+            sequence={sequence} 
+            onChange={onSequenceChange} 
+          />
         </CardContent>
       </Card>
 
