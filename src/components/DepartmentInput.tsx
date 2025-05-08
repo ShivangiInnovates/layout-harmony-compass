@@ -89,7 +89,7 @@ const DepartmentInput: React.FC<DepartmentInputProps> = ({
         <div className="flex gap-2 items-center font-semibold text-sm">
           <Label className="w-8 text-right"></Label>
           <span className="w-32">Department Name</span>
-          <span className="w-24">Score/Value</span>
+          <span className="w-24">Area</span>
           <span className="w-10"></span>
         </div>
         {localDepartments.map((dept, index) => (

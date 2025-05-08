@@ -232,7 +232,7 @@ const Dashboard = () => {
                 </Button>
               )}
               <Button onClick={calculateResults}>
-                Calculate Layout Score
+                Sequence Calculation
               </Button>
             </div>
           </div>
