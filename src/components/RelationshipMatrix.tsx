@@ -29,13 +29,35 @@ const RelationshipMatrix: React.FC<RelationshipMatrixProps> = ({
 
   // Initialize if matrix doesn't match departments length
   useEffect(() => {
-    if (matrix.length !== departments.length) {
-      const newMatrix = Array(departments.length)
-        .fill(null)
-        .map(() => Array(departments.length).fill(""));
-      onChange(newMatrix);
+    // Only initialize if we have departments and the matrix size doesn't match
+    if (departments.length > 0 && (matrix.length !== departments.length || !matrix.every(row => row.length === departments.length))) {
+      try {
+        // Create a new properly sized matrix
+        const newMatrix = Array(departments.length)
+          .fill(null)
+          .map(() => Array(departments.length).fill(""));
+        
+        // Copy over existing values if possible
+        const minSize = Math.min(matrix.length, departments.length);
+        for (let i = 0; i < minSize; i++) {
+          for (let j = 0; j < minSize; j++) {
+            if (matrix[i] && matrix[i][j] !== undefined) {
+              newMatrix[i][j] = matrix[i][j];
+            }
+          }
+        }
+        
+        onChange(newMatrix);
+      } catch (error) {
+        console.error("Error initializing relationship matrix:", error);
+        // Provide a safe fallback
+        const fallbackMatrix = Array(departments.length)
+          .fill(null)
+          .map(() => Array(departments.length).fill(""));
+        onChange(fallbackMatrix);
+      }
     }
-  }, [departments.length, matrix.length, onChange]);
+  }, [departments.length, matrix, onChange]);
 
   // Update TCR matrix when relationship matrix changes
   useEffect(() => {

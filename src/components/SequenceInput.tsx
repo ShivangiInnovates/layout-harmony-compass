@@ -3,18 +3,22 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { formatSequence } from "@/utils/layoutUtils";
-import { ArrowRight, Shuffle } from "lucide-react";
+import { formatSequence, generateOptimalSequence } from "@/utils/layoutUtils";
+import { ArrowRight, Wand2 } from "lucide-react";
 
 interface SequenceInputProps {
   departmentCount: number;
   sequence: number[];
+  relMatrix: string[][];
+  departmentAreas: number[];
   onChange: (sequence: number[]) => void;
 }
 
 const SequenceInput: React.FC<SequenceInputProps> = ({
   departmentCount,
   sequence,
+  relMatrix,
+  departmentAreas,
   onChange,
 }) => {
   const [sequenceInput, setSequenceInput] = useState("");
@@ -42,20 +46,12 @@ const SequenceInput: React.FC<SequenceInputProps> = ({
     }
   };
 
-  const generateRandomSequence = () => {
-    // Create array of department indices
-    const indices = Array.from({ length: departmentCount }, (_, i) => i);
-    
-    // Fisher-Yates shuffle algorithm
-    for (let i = indices.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [indices[i], indices[j]] = [indices[j], indices[i]];
-    }
-    
-    onChange(indices);
-    // Update the input field
-    setSequenceInput(indices.map(i => i + 1).join(", "));
+  const handleGenerateOptimalSequence = () => {
+    // Generate optimal sequence based on REL matrix and department areas
+    const optimalSequence = generateOptimalSequence(relMatrix, departmentAreas);
+    onChange(optimalSequence);
   };
+
 
   return (
     <div className="space-y-4">
@@ -68,22 +64,28 @@ const SequenceInput: React.FC<SequenceInputProps> = ({
             id="sequence"
             value={sequenceInput}
             onChange={(e) => handleInputChange(e.target.value)}
+            onBlur={() => handleSubmit()}
+            onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
             placeholder="e.g., 1, 3, 2, 5, 4, 7, 6, 8"
             className={error ? "border-destructive" : ""}
           />
-          <Button onClick={handleSubmit} size="sm">
-            Apply
+          <Button 
+            onClick={handleGenerateOptimalSequence} 
+            size="sm" 
+            variant="outline"
+            className="flex items-center gap-1"
+            title="Generate optimal sequence based on relationships and areas"
+          >
+            <Wand2 className="h-4 w-4" />
+            <span className="hidden sm:inline">Generate</span>
           </Button>
         </div>
         {error && <p className="text-destructive text-sm mt-1">{error}</p>}
       </div>
       
       <div>
-        <div className="flex justify-between items-center mb-2">
+        <div className="mb-2">
           <Label className="block">Sequence Visualization:</Label>
-          <Button variant="outline" size="sm" onClick={generateRandomSequence}>
-            <Shuffle className="h-3 w-3 mr-1" /> Random
-          </Button>
         </div>
         <div className="flex flex-wrap gap-2 p-2 bg-background rounded-md border">
           {sequence.map((deptIndex, i) => (

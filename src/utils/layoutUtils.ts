@@ -220,3 +220,95 @@ export function generateSampleData(departmentCount: number = 8): {
     sequence
   };
 }
+
+// Generate an optimal department sequence based on REL matrix, TCR scores, and department areas
+export function generateOptimalSequence(
+  relMatrix: string[][],
+  departmentAreas: number[],
+  tcrScores?: number[]
+): number[] {
+  const n = relMatrix.length;
+  
+  // Calculate TCR scores if not provided
+  const scores = tcrScores ?? calculateRelationshipTcrScores(relMatrix);
+  
+  // Initialize sequence and tracking set
+  const sequence: number[] = [];
+  const inSequence = new Set<number>();
+  
+  // Step 1: Start with highest TCR department (tiebreak by area)
+  let highestTcrDept = -1;
+  let highestTcr = -1;
+  let highestArea = -1;
+  
+  for (let i = 0; i < n; i++) {
+    if (scores[i] > highestTcr || (scores[i] === highestTcr && departmentAreas[i] > highestArea)) {
+      highestTcrDept = i;
+      highestTcr = scores[i];
+      highestArea = departmentAreas[i];
+    }
+  }
+  
+  // Add first department to sequence
+  sequence.push(highestTcrDept);
+  inSequence.add(highestTcrDept);
+  
+  // Complete the sequence by adding remaining departments
+  while (sequence.length < n) {
+    const lastDept = sequence[sequence.length - 1];
+    
+    // Find departments with 'A' relationship to the last department
+    const candidateDepts: number[] = [];
+    for (let i = 0; i < n; i++) {
+      if (!inSequence.has(i) && relMatrix[lastDept][i] === 'A') {
+        candidateDepts.push(i);
+      }
+    }
+    
+    if (candidateDepts.length === 1) {
+      // Only one candidate - add it to sequence
+      sequence.push(candidateDepts[0]);
+      inSequence.add(candidateDepts[0]);
+    } else if (candidateDepts.length > 1) {
+      // Multiple candidates - apply tiebreakers
+      let nextDept = -1;
+      let maxArea = -1;
+      let maxTcr = -1;
+      
+      for (const deptIndex of candidateDepts) {
+        const area = departmentAreas[deptIndex];
+        const tcr = scores[deptIndex];
+        
+        // Apply tiebreakers in order: area, then TCR
+        if (area > maxArea || (area === maxArea && tcr > maxTcr)) {
+          nextDept = deptIndex;
+          maxArea = area;
+          maxTcr = tcr;
+        }
+      }
+      
+      sequence.push(nextDept);
+      inSequence.add(nextDept);
+    } else {
+      // No 'A' relationships - find highest TCR department not in sequence
+      let maxTcrDept = -1;
+      let maxTcr = -1;
+      let maxArea = -1;
+      
+      for (let i = 0; i < n; i++) {
+        if (!inSequence.has(i)) {
+          if (scores[i] > maxTcr || (scores[i] === maxTcr && departmentAreas[i] > maxArea)) {
+            maxTcrDept = i;
+            maxTcr = scores[i];
+            maxArea = departmentAreas[i];
+          }
+        }
+      }
+      
+      sequence.push(maxTcrDept);
+      inSequence.add(maxTcrDept);
+    }
+  }
+  
+  return sequence;
+}

@@ -11,6 +11,7 @@ interface ResultsDisplayProps {
   sequence: number[];
   scores: number[];
   layoutScore: number;
+  departmentAreas: number[];
   onSequenceChange: (sequence: number[]) => void;
 }
 
@@ -21,6 +22,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   sequence,
   scores,
   layoutScore,
+  departmentAreas,
   onSequenceChange,
 }) => {
   // Calculate the maximum possible score for reference
@@ -64,6 +66,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           <SequenceInput 
             departmentCount={departments.length} 
             sequence={sequence} 
+            relMatrix={relMatrix}
+            departmentAreas={departmentAreas}
             onChange={onSequenceChange} 
           />
         </CardContent>

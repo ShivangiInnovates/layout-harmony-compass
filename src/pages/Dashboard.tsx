@@ -65,17 +65,36 @@ const Dashboard = () => {
   // Recalculate when departments change
   useEffect(() => {
     if (departments.length > 0) {
-      // If matrix doesn't match department size, initialize it
-      if (relMatrix.length !== departments.length) {
+      try {
+        // If matrix doesn't match department size, initialize it properly
+        if (relMatrix.length !== departments.length) {
+          // First create a safe copy of the current matrix to preserve existing relationships
+          const newMatrix = initializeRelMatrix(departments.length);
+          
+          // Copy over any existing relationships that still fit in the new matrix
+          const minSize = Math.min(relMatrix.length, departments.length);
+          for (let i = 0; i < minSize; i++) {
+            for (let j = 0; j < minSize; j++) {
+              if (relMatrix[i] && relMatrix[i][j]) {
+                newMatrix[i][j] = relMatrix[i][j];
+              }
+            }
+          }
+          
+          setRelMatrix(newMatrix);
+        }
+        
+        // Reset sequence if department count changes
+        if (sequence.length !== departments.length) {
+          setSequence(Array(departments.length).fill(0).map((_, i) => i));
+        }
+      } catch (error) {
+        console.error("Error updating matrix after department change:", error);
+        // Fallback to a fresh matrix if there was an error
         setRelMatrix(initializeRelMatrix(departments.length));
       }
-      
-      // Reset sequence if department count changes
-      if (sequence.length !== departments.length) {
-        setSequence(Array(departments.length).fill(0).map((_, i) => i));
-      }
     }
-  }, [departments]);
+  }, [departments, relMatrix.length, sequence.length]);
 
   // Calculate results
   const calculateResults = () => {
@@ -249,6 +268,7 @@ const Dashboard = () => {
                 sequence={sequence}
                 scores={departmentScores}
                 layoutScore={layoutScore}
+                departmentAreas={departments.map(d => typeof d.score === 'number' ? d.score : 0)}
                 onSequenceChange={setSequence}
               />
               
