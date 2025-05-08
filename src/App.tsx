@@ -25,9 +25,6 @@ const App = () => (
       <Sonner />
       <ThemeProvider>
         <div className="min-h-screen bg-background text-foreground transition-colors">
-          <div className="flex justify-end p-4">
-            <ThemeToggle />
-          </div>
           <BrowserRouter>
             <AuthProvider>
               <Routes>
