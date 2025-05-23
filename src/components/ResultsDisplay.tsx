@@ -106,6 +106,44 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
           </div>
         </CardContent>
       </Card>
+
+      {/* Department Grid Table */}
+      <div className="md:col-span-2">
+        <div className="mt-6">
+          <h3 className="font-bold text-xl mb-2">Department Grid Assignment</h3>
+          {departments.length > 0 && (
+            (() => {
+              const totalArea = departmentAreas.reduce((sum, area) => sum + area, 0);
+              const avgArea = departments.length > 0 ? Math.round(totalArea / departments.length) : 0;
+              return (
+                <>
+                  <div className="mb-4 text-base font-semibold">Average Area: {avgArea}</div>
+                  <table className="min-w-full border border-gray-400 rounded-md">
+                    <thead>
+                      <tr className="bg-muted">
+                        <th className="px-4 py-2 border border-gray-400 font-bold">Department</th>
+                        <th className="px-4 py-2 border border-gray-400 font-bold">Grid</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sequence.map((deptIndex, seqPos) => {
+                        const area = Math.round(departmentAreas[deptIndex]);
+                        const grid = area < avgArea ? 1 : 2;
+                        return (
+                          <tr key={seqPos} className="text-center">
+                            <td className="px-4 py-2 border border-gray-400">{departments[deptIndex]} ({area})</td>
+                            <td className="px-4 py-2 border border-gray-400 font-bold">{grid}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </>
+              );
+            })()
+          )}
+        </div>
+      </div>
     </div>
   );
 };
