@@ -1,4 +1,3 @@
-
 import React, { useMemo } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getTcrColorClass } from "@/utils/layoutUtils";
@@ -104,31 +103,6 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
                 </div>
               </div>
             ))}
-            
-            <div className="mt-6 pt-4 border-t">
-              <h3 className="font-semibold mb-2">Layout Evaluation</h3>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-3 rounded-md bg-muted">
-                  <div className="text-sm text-muted-foreground">
-                    Total Layout Score
-                  </div>
-                  <div className="text-2xl font-bold">{layoutScore}</div>
-                </div>
-                <div className="p-3 rounded-md bg-muted">
-                  <div className="text-sm text-muted-foreground">
-                    Quality Rating
-                  </div>
-                  <div className="text-2xl font-bold">{normalizedScore}%</div>
-                </div>
-              </div>
-              
-              <div className="mt-4 text-sm text-muted-foreground">
-                <p>Maximum possible score for this configuration: {maxPossibleScore}</p>
-                <p className="mt-1">
-                  The quality rating represents how close this layout is to the theoretical optimal arrangement.
-                </p>
-              </div>
-            </div>
           </div>
         </CardContent>
       </Card>
