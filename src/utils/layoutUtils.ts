@@ -1,4 +1,3 @@
-
 // REL values and their numeric equivalents for TCR calculation
 export const REL_VALUES: Record<string, number> = {
   "A": 6,  // Absolutely necessary
@@ -311,4 +310,22 @@ export function generateOptimalSequence(
   }
   
   return sequence;
+}
+
+// Convert a relationship matrix to a list of relationships for the optimization API
+export function convertRelMatrixToRelationships(
+  departments: { name: string; score: number | '' }[],
+  relMatrix: string[][]
+): [string, string, string][] {
+  const relationships: [string, string, string][] = [];
+  
+  for (let i = 0; i < relMatrix.length; i++) {
+    for (let j = i + 1; j < relMatrix[i].length; j++) {
+      if (relMatrix[i][j]) { // Skip empty cells
+        relationships.push([departments[i].name, departments[j].name, relMatrix[i][j]]);
+      }
+    }
+  }
+  
+  return relationships;
 }

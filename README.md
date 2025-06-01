@@ -1,52 +1,73 @@
-# Welcome to your Lovable project
+# Layout Harmony Compass with ML Optimization
 
-## Project info
+This application helps design optimal facility layouts using relationship matrices and genetic algorithms.
 
-**URL**: https://lovable.dev/projects/a7fa38c7-26f8-4f0d-b472-e73da11f1d45
+## Features
 
-## How can I edit this code?
+- Department input with area specification
+- Relationship matrix definition (A, E, I, O, U, X)
+- Sequence calculation based on TCR values
+- Machine Learning optimization using genetic algorithms
+- Visual representation of layout results
 
-There are several ways of editing your application.
+## Getting Started
 
-**Use Lovable**
+### Prerequisites
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a7fa38c7-26f8-4f0d-b472-e73da11f1d45) and start prompting.
+- Node.js (v16 or later) for the React frontend
+- Python (v3.8 or later) for the optimization algorithm
+- Required Python packages: `flask`, `flask-cors`, `numpy`, `matplotlib`
 
-Changes made via Lovable will be committed automatically to this repo.
+### Installation
 
-**Use your preferred IDE**
+1. Clone the repository
+2. Install JavaScript dependencies:
+   ```
+   npm install
+   ```
+3. Install Python dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Running the Application
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+You can start both the React frontend and Flask API server using the provided batch file:
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+start_servers.bat
 ```
 
-**Edit a file directly in GitHub**
+Or start them separately:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. Start the Python API server:
+   ```
+   python server.py
+   ```
 
-**Use GitHub Codespaces**
+2. Start the React development server:
+   ```
+   npm run dev
+   ## Usage
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
+1. Input department names and areas
+2. Define the relationship matrix between departments
+3. Calculate the initial sequence
+4. Click "Optimize Layout with ML" to run the genetic algorithm
+5. View the optimized layout visualization
+
+## Algorithm Details
+
+The optimization uses a genetic algorithm to find the best department placement:
+
+- **Input**: Department areas, relationship matrix, initial sequence
+- **Process**: Multiple generations of selection, crossover, and mutation
+- **Output**: Optimized layout with highest adjacency score
+- **Parameters**: Population size, generations, mutation rate
+
+## License
+
+This project is licensed under the MIT License
 - Click on "New codespace" to launch a new Codespace environment.
 - Edit files directly within the Codespace and commit and push your changes once you're done.
 

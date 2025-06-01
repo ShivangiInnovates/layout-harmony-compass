@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { LogOut, Save } from "lucide-react";
 import DepartmentInput from "@/components/DepartmentInput";
+import { OptimizationButton } from "@/components/OptimizationButton";
 
 interface Department {
   name: string;
@@ -253,6 +254,13 @@ const Dashboard = () => {
               <Button onClick={calculateResults}>
                 Sequence Calculation
               </Button>
+              {resultsVisible && (
+                <OptimizationButton
+                  departments={departments}
+                  relMatrix={relMatrix}
+                  sequence={sequence}
+                />
+              )}
             </div>
           </div>
           
