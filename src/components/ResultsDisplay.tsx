@@ -53,15 +53,15 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     : 0;
 
   return (
-    <div className="grid gap-6 md:grid-cols-2">
-      <Card>
+    <div className="grid gap-6 md:grid-cols-2 md:items-start">
+      <Card className="h-full">
         <CardHeader>
           <CardTitle className="text-xl font-bold text-gray-900">Department Sequence</CardTitle>
           <CardDescription className="text-base font-medium text-gray-700">
             Arrange the layout sequence of your departments
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="h-full">
           <SequenceInput
             departmentCount={departments.length}
             sequence={sequence}
@@ -72,7 +72,7 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="h-full">
         <CardHeader>
           <CardTitle className="text-xl font-bold text-gray-900">Department Grid Assignment</CardTitle>
           <CardDescription className="text-base font-medium text-gray-700">
