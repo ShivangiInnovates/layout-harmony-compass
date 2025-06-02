@@ -23,15 +23,10 @@ const Login: React.FC<LoginProps> = ({ isAdminLogin }) => {
     isAdminLogin : 
     location.pathname === "/admin-login";
 
-  // Prefill demo credentials based on login type
+  // Clear form when switching between login types
   useEffect(() => {
-    if (isAdminLoginPage) {
-      setEmail("admin@example.com");
-      setPassword("admin123");
-    } else if (location.pathname === "/user-login") {
-      setEmail("user@example.com");
-      setPassword("user123");
-    }
+    setEmail("");
+    setPassword("");
   }, [isAdminLoginPage, location.pathname]);
 
   // Redirect if already authenticated

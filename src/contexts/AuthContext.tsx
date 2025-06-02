@@ -2,6 +2,7 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { authAPI, getAuthToken } from "@/services/api";
 
 interface User {
   id: string;
@@ -20,12 +21,6 @@ interface AuthContextType {
   isAdmin: boolean;
 }
 
-// Mock user data for demo purposes
-const MOCK_USERS = [
-  { id: "1", email: "admin@example.com", password: "admin123", role: "admin", name: "Admin User" },
-  { id: "2", email: "user@example.com", password: "user123", role: "user", name: "Regular User" },
-];
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -36,45 +31,58 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Check for saved user on initial load
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error("Failed to parse stored user:", error);
-        localStorage.removeItem("user");
+    const checkAuthStatus = async () => {
+      const token = getAuthToken();
+      if (token) {
+        try {
+          const response = await authAPI.getProfile();
+          if (response.success) {
+            setUser({
+              id: response.user._id,
+              email: response.user.email,
+              name: response.user.name,
+              role: response.user.role
+            });
+          } else {
+            // Token is invalid, remove it
+            authAPI.logout();
+          }
+        } catch (error) {
+          console.error("Failed to verify auth token:", error);
+          authAPI.logout();
+        }
       }
-    }
-    setIsLoading(false);
+      setIsLoading(false);
+    };
+
+    checkAuthStatus();
   }, []);
 
   const login = async (email: string, password: string) => {
-    // Mock authentication logic
     setIsLoading(true);
-    
+
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const matchedUser = MOCK_USERS.find(
-        u => u.email === email && u.password === password
-      );
-      
-      if (!matchedUser) {
-        throw new Error("Invalid email or password");
+      const response = await authAPI.login(email, password);
+
+      if (response.success) {
+        const userData = {
+          id: response.user._id,
+          email: response.user.email,
+          name: response.user.name,
+          role: response.user.role
+        };
+
+        setUser(userData);
+
+        toast({
+          title: "Login successful",
+          description: `Welcome back, ${userData.name || userData.email}!`,
+        });
+
+        navigate(userData.role === "admin" ? "/admin" : "/dashboard");
+      } else {
+        throw new Error(response.message || "Login failed");
       }
-      
-      // Remove password from user object
-      const { password: _, ...safeUserData } = matchedUser;
-      setUser(safeUserData as User);
-      localStorage.setItem("user", JSON.stringify(safeUserData));
-      
-      toast({
-        title: "Login successful",
-        description: `Welcome back, ${safeUserData.name || safeUserData.email}!`,
-      });
-      
-      navigate(safeUserData.role === "admin" ? "/admin" : "/dashboard");
     } catch (error: any) {
       toast({
         title: "Login failed",
@@ -88,34 +96,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const register = async (email: string, password: string, name: string) => {
     setIsLoading(true);
-    
+
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Check if user already exists
-      if (MOCK_USERS.some(u => u.email === email)) {
-        throw new Error("User already exists with this email");
+      const response = await authAPI.register(email, password, name);
+
+      if (response.success) {
+        const userData = {
+          id: response.user.id,
+          email: response.user.email,
+          name: response.user.name,
+          role: response.user.role
+        };
+
+        setUser(userData);
+
+        toast({
+          title: "Registration successful",
+          description: `Welcome, ${name || email}!`,
+        });
+
+        navigate("/dashboard");
+      } else {
+        throw new Error(response.message || "Registration failed");
       }
-      
-      // In a real app, we would create the user in the database
-      // For this mock version, we'll just simulate success
-      const newUser = {
-        id: `user_${Date.now()}`,
-        email,
-        role: "user" as const,
-        name,
-      };
-      
-      setUser(newUser);
-      localStorage.setItem("user", JSON.stringify(newUser));
-      
-      toast({
-        title: "Registration successful",
-        description: `Welcome, ${name || email}!`,
-      });
-      
-      navigate("/dashboard");
     } catch (error: any) {
       toast({
         title: "Registration failed",
@@ -129,7 +132,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("user");
+    authAPI.logout(); // This removes the auth token
     navigate("/login");
     toast({
       title: "Logged out",

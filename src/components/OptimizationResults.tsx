@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Loader2 } from 'lucide-react';
-import { optimizeLayout } from '../services/OptimizationService';
+import { optimizationAPI } from '../services/api';
 
 interface OptimizationResultsProps {
   departments: Record<string, number>;
@@ -23,19 +23,17 @@ export function OptimizationResults({
   const handleOptimize = async () => {
     setLoading(true);
     setError(null);
-    
+
     try {
-      const optimizationResult = await optimizeLayout(
-        departments, 
-        relationships, 
+      const optimizationResult = await optimizationAPI.optimize({
+        departments,
+        relationships,
         sequence,
-        {
-          popSize: 50,
-          generations: 100,
-          mutationRate: 0.2,
-          elitism: 2,
-        }
-      );
+        popSize: 50,
+        generations: 100,
+        mutationRate: 0.2,
+        elitism: 2,
+      });
       setResult(optimizationResult);
     } catch (err) {
       setError('Failed to optimize layout: ' + (err instanceof Error ? err.message : String(err)));

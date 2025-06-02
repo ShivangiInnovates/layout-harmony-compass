@@ -24,6 +24,7 @@ import {
   generateSampleData,
   DEFAULT_DEPARTMENTS
 } from "@/utils/layoutUtils";
+import { dataAPI } from "@/services/api";
 
 // Mock database for saved layouts
 let MOCK_USER_LAYOUTS: Record<string, any[]> = {
@@ -96,13 +97,66 @@ const Dashboard = () => {
     }
   }, [departments, relMatrix.length, sequence.length]);
 
-  // Calculate results
-  const calculateResults = () => {
+  // Save department areas to database
+  const saveDepartmentAreas = async () => {
+    if (!user) return;
+
+    try {
+      const departmentData = departments.reduce((acc, dept) => {
+        acc[dept.name] = typeof dept.score === 'number' ? dept.score : 0;
+        return acc;
+      }, {} as Record<string, number>);
+
+      await dataAPI.saveDepartmentAreas(departmentData);
+
+      toast({
+        title: "Department Areas Saved",
+        description: "Your department areas have been saved to the database",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Save Failed",
+        description: error.message || "Failed to save department areas",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Save relationship matrix to database
+  const saveRelationshipMatrix = async () => {
+    if (!user) return;
+
+    try {
+      const relationshipData = relMatrix.map((row, i) =>
+        row.map((cell, j) => ({
+          from: departments[i]?.name || `Dept${i}`,
+          to: departments[j]?.name || `Dept${j}`,
+          relationship: cell
+        }))
+      ).flat();
+
+      await dataAPI.saveRelationshipMatrix(relationshipData);
+
+      toast({
+        title: "Relationship Matrix Saved",
+        description: "Your relationship matrix has been saved to the database",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Save Failed",
+        description: error.message || "Failed to save relationship matrix",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Calculate results and save to database
+  const calculateResults = async () => {
     // Validate the REL matrix
-    const hasInvalidCells = relMatrix.some((row, i) => 
+    const hasInvalidCells = relMatrix.some((row, i) =>
       row.some((cell, j) => i !== j && !cell)
     );
-    
+
     if (hasInvalidCells) {
       toast({
         title: "Incomplete Matrix",
@@ -111,21 +165,33 @@ const Dashboard = () => {
       });
       return;
     }
-    
+
     // Convert REL values to TCR
     const tcr = convertRelToTcr(relMatrix);
     setTcrMatrix(tcr);
-    
+
     // Calculate scores per department based on relationship counts (same as TCR matrix)
     const scores = calculateRelationshipTcrScores(relMatrix);
     setDepartmentScores(scores);
-    
+
     // Calculate overall layout score
     const total = calculateLayoutScore(tcr, sequence);
     setLayoutScore(total);
-    
+
     setResultsVisible(true);
-    
+
+    // Save data to database
+    if (user) {
+      try {
+        await Promise.all([
+          saveDepartmentAreas(),
+          saveRelationshipMatrix()
+        ]);
+      } catch (error) {
+        console.error("Error saving data to database:", error);
+      }
+    }
+
     toast({
       title: "Calculation Complete",
       description: `Layout Score: ${total}`,
