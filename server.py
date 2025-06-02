@@ -45,7 +45,7 @@ def optimize():
         
         if best_pos:
             plot_title = f"Optimal Layout (Score: {best_score:.0f})"
-            fig = plot_layout(best_pos, title=plot_title, score_history=history)
+            fig = plot_layout(best_pos, title=plot_title)
             
             
             buf = BytesIO()

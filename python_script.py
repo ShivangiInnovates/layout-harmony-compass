@@ -22,7 +22,7 @@ def place_departments(sequence, grid_values_map):
     Given:
       - sequence:       a permutation of department names (length = n_departments)
       - grid_values_map: {dept_name: 1 or 2}
-    Attempts to place each department in row-major order on the grid:
+    Attempts to place each department in row-major order on the grid, centered vertically:
       - If grid_values_map[dept] == 2 => place in two horizontally adjacent empty cells
       - If grid_values_map[dept] == 1 => place in one empty cell (first found)
     Returns:
@@ -33,6 +33,19 @@ def place_departments(sequence, grid_values_map):
     grid = [[None for _ in range(GRID_COLS)] for _ in range(GRID_ROWS)]
     positions = {}
 
+    # Calculate total cells needed and determine starting row for centering
+    total_cells_needed = sum(grid_values_map.get(dept, 1) for dept in sequence)
+
+    # Estimate rows needed (assuming optimal packing)
+    rows_needed = (total_cells_needed + GRID_COLS - 1) // GRID_COLS  # Ceiling division
+
+    # Calculate starting row to center vertically
+    start_row = max(0, (GRID_ROWS - rows_needed) // 2)
+
+    # Track current position for placement
+    current_row = start_row
+    current_col = 0
+
     for dept in sequence:
         gv = grid_values_map.get(dept) # Use .get() for safety if dept not in map
         if gv is None:
@@ -42,26 +55,66 @@ def place_departments(sequence, grid_values_map):
         placed = False
 
         if gv == 2:
-            for r in range(GRID_ROWS):
-                for c in range(GRID_COLS - 1):
-                    if grid[r][c] is None and grid[r][c+1] is None:
-                        grid[r][c] = dept
-                        grid[r][c+1] = dept
-                        positions[dept] = [(r, c), (r, c+1)]
+            # Need two adjacent horizontal cells
+            # Check if we can place at current position
+            if current_col <= GRID_COLS - 2 and current_row < GRID_ROWS:
+                if grid[current_row][current_col] is None and grid[current_row][current_col+1] is None:
+                    grid[current_row][current_col] = dept
+                    grid[current_row][current_col+1] = dept
+                    positions[dept] = [(current_row, current_col), (current_row, current_col+1)]
+                    current_col += 2
+                    placed = True
+                else:
+                    # Move to next row if current position is occupied
+                    current_row += 1
+                    current_col = 0
+                    if current_row < GRID_ROWS and current_col <= GRID_COLS - 2:
+                        grid[current_row][current_col] = dept
+                        grid[current_row][current_col+1] = dept
+                        positions[dept] = [(current_row, current_col), (current_row, current_col+1)]
+                        current_col += 2
                         placed = True
-                        break
-                if placed:
-                    break
+            else:
+                # Move to next row
+                current_row += 1
+                current_col = 0
+                if current_row < GRID_ROWS and current_col <= GRID_COLS - 2:
+                    grid[current_row][current_col] = dept
+                    grid[current_row][current_col+1] = dept
+                    positions[dept] = [(current_row, current_col), (current_row, current_col+1)]
+                    current_col += 2
+                    placed = True
         else: # gv == 1
-            for r in range(GRID_ROWS):
-                for c in range(GRID_COLS):
-                    if grid[r][c] is None:
-                        grid[r][c] = dept
-                        positions[dept] = [(r, c)]
+            # Need one cell
+            if current_col < GRID_COLS and current_row < GRID_ROWS:
+                if grid[current_row][current_col] is None:
+                    grid[current_row][current_col] = dept
+                    positions[dept] = [(current_row, current_col)]
+                    current_col += 1
+                    placed = True
+                else:
+                    # Move to next row if current position is occupied
+                    current_row += 1
+                    current_col = 0
+                    if current_row < GRID_ROWS:
+                        grid[current_row][current_col] = dept
+                        positions[dept] = [(current_row, current_col)]
+                        current_col += 1
                         placed = True
-                        break
-                if placed:
-                    break
+            else:
+                # Move to next row
+                current_row += 1
+                current_col = 0
+                if current_row < GRID_ROWS:
+                    grid[current_row][current_col] = dept
+                    positions[dept] = [(current_row, current_col)]
+                    current_col += 1
+                    placed = True
+
+        # If we reach the end of a row, move to next row
+        if current_col >= GRID_COLS:
+            current_row += 1
+            current_col = 0
 
         if not placed:
             return None, None  # Cannot place this department
@@ -247,34 +300,19 @@ def genetic_algorithm(dept_list_names, grid_values_map, relation_dict_weights,
     return best_layout_overall, best_positions_overall, best_score_overall, history_of_best_scores
 
 
-def plot_layout(layout_positions, title="Facility Layout", score_history=None):
+def plot_layout(layout_positions, title="Facility Layout"):
     """
-    Plots the facility layout and optionally the score history.
+    Plots the facility layout only (score history graph removed).
     """
     if layout_positions is None:
         print("No valid layout to plot.")
-        if score_history:
-            plt.figure(figsize=(6,4))
-            plt.plot(score_history)
-            plt.title("Score History (No Valid Layout Found)")
-            plt.xlabel("Generation")
-            plt.ylabel("Best Score")
-            plt.grid(True)
-            plt.tight_layout()
-            # plt.show() - Comment out for web integration
-            return None # Return None if no layout to plot
+        return None # Return None if no layout to plot
 
-    num_plots = 2 if score_history and len(score_history) > 0 else 1
-    fig_width = 12 if num_plots == 2 else 6
-    fig, axs = plt.subplots(1, num_plots, figsize=(fig_width, 6))
-    
-    ax_layout = axs[0] if num_plots == 2 else axs
+    # Only create layout plot (removed score history graph)
+    fig, ax_layout = plt.subplots(1, 1, figsize=(10, 8))  # Larger figure for better visibility
 
-    # Draw grid lines
-    for r_line in range(GRID_ROWS + 1):
-        ax_layout.plot([0, GRID_COLS], [r_line, r_line], color='gray', lw=0.5)
-    for c_line in range(GRID_COLS + 1):
-        ax_layout.plot([c_line, c_line], [0, GRID_ROWS], color='gray', lw=0.5)
+    # Draw only outer border (removed inner grid lines)
+    ax_layout.plot([0, GRID_COLS, GRID_COLS, 0, 0], [0, 0, GRID_ROWS, GRID_ROWS, 0], color='black', lw=2)
 
     # Fill each occupied cell & place the dept name inside it
     colors = plt.cm.get_cmap('Pastel2', len(layout_positions))
@@ -305,12 +343,12 @@ def plot_layout(layout_positions, title="Facility Layout", score_history=None):
         )
         ax_layout.add_patch(rect)
         
-        # Place text in the center of the bounding box
+        # Place text in the center of the bounding box with improved styling
         center_x = min_c + width / 2.0
         center_y = min_r + height / 2.0
         ax_layout.text(center_x, center_y, dept,
-                       ha='center', va='center', fontsize=9, color='black',
-                       bbox=dict(facecolor='white', alpha=0.5, pad=0.2, boxstyle='round,pad=0.3'))
+                       ha='center', va='center', fontsize=12, fontweight='bold', color='black',
+                       bbox=dict(facecolor='white', alpha=0.8, pad=0.3, boxstyle='round,pad=0.4'))
 
     ax_layout.set_xlim(0, GRID_COLS)
     ax_layout.set_ylim(0, GRID_ROWS)
@@ -320,18 +358,11 @@ def plot_layout(layout_positions, title="Facility Layout", score_history=None):
     ax_layout.set_yticklabels([])
     ax_layout.set_aspect('equal')
     ax_layout.invert_yaxis()  # Row 0 at top
-    ax_layout.set_title(title)
+    ax_layout.set_title(title, fontsize=16, fontweight='bold', pad=20)
 
-    if num_plots == 2:
-        ax_score = axs[1]
-        ax_score.plot(score_history, marker='o', linestyle='-')
-        ax_score.set_title("Score Improvement Over Generations")
-        ax_score.set_xlabel("Generation")
-        ax_score.set_ylabel("Best Adjacency Score")
-        ax_score.grid(True)
-
+    # Removed score history plotting section
     plt.tight_layout()
-    
+
     # For web integration, return the figure instead of showing it
     # plt.show() - Comment out for web integration
     return fig # Return the figure object
