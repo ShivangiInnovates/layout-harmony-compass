@@ -69,10 +69,8 @@ const SequenceInput: React.FC<SequenceInputProps> = ({
             placeholder="e.g., 1, 3, 2, 5, 4, 7, 6, 8"
             className={error ? "border-destructive" : ""}
           />
-          <Button 
-            onClick={handleGenerateOptimalSequence} 
-            size="sm" 
-            variant="outline"
+          <Button
+            onClick={handleGenerateOptimalSequence}
             className="flex items-center gap-1"
             title="Generate optimal sequence based on relationships and areas"
           >

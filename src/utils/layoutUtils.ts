@@ -92,22 +92,7 @@ export function calculateLayoutScore(tcrMatrix: number[][], sequence: number[]):
   return totalScore;
 }
 
-// Create an adjacency matrix from the department sequence
-export function createAdjacencyMatrix(sequence: number[], n: number): boolean[][] {
-  // Initialize nxn matrix with all false
-  const adjMatrix: boolean[][] = Array(n).fill(0).map(() => Array(n).fill(false));
-  
-  // Mark adjacencies based on sequence
-  for (let i = 0; i < sequence.length - 1; i++) {
-    const dept1 = sequence[i];
-    const dept2 = sequence[i + 1];
-    
-    adjMatrix[dept1][dept2] = true;
-    adjMatrix[dept2][dept1] = true; // Symmetrical
-  }
-  
-  return adjMatrix;
-}
+
 
 // Initialize an empty REL matrix
 export function initializeRelMatrix(size: number): string[][] {

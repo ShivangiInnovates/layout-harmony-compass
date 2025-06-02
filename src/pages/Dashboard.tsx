@@ -15,7 +15,6 @@ interface Department {
 import RelationshipMatrix from "@/components/RelationshipMatrix";
 import SequenceInput from "@/components/SequenceInput";
 import ResultsDisplay from "@/components/ResultsDisplay";
-import VisualizationDisplay from "@/components/VisualizationDisplay";
 import {
   convertRelToTcr,
   calculateTcrScores,
@@ -252,15 +251,8 @@ const Dashboard = () => {
                 </Button>
               )}
               <Button onClick={calculateResults}>
-                Sequence Calculation
+                Save and Proceed
               </Button>
-              {resultsVisible && (
-                <OptimizationButton
-                  departments={departments}
-                  relMatrix={relMatrix}
-                  sequence={sequence}
-                />
-              )}
             </div>
           </div>
           
@@ -268,8 +260,8 @@ const Dashboard = () => {
           {resultsVisible && (
             <div className="mt-4 space-y-8">
               <h2 className="text-xl font-semibold">Layout Analysis Results</h2>
-              
-              <ResultsDisplay 
+
+              <ResultsDisplay
                 departments={departments.map(d => d.name)}
                 relMatrix={relMatrix}
                 tcrMatrix={tcrMatrix}
@@ -279,12 +271,15 @@ const Dashboard = () => {
                 departmentAreas={departments.map(d => typeof d.score === 'number' ? d.score : 0)}
                 onSequenceChange={setSequence}
               />
-              
-              <VisualizationDisplay 
-                departments={departments.map(d => d.name)}
-                sequence={sequence}
-                tcrMatrix={tcrMatrix}
-              />
+
+              {/* Optimization Button - Centered below the results */}
+              <div className="flex justify-center mt-8">
+                <OptimizationButton
+                  departments={departments}
+                  relMatrix={relMatrix}
+                  sequence={sequence}
+                />
+              </div>
             </div>
           )}
           
