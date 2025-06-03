@@ -51,30 +51,33 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   const normalizedScore = maxPossibleScore > 0 
     ? Math.round((layoutScore / maxPossibleScore) * 100) 
     : 0;
-
   return (
-    <div className="grid gap-6 md:grid-cols-2 md:items-start">
-      <Card className="h-full">
+    <div className="space-y-8">
+      {/* Department Sequence Section - Full Width, Horizontal */}
+      <Card className="w-full">
         <CardHeader>
           <CardTitle className="text-xl font-bold text-gray-900">Department Sequence</CardTitle>
           <CardDescription className="text-base font-medium text-gray-700">
             Arrange the layout sequence of your departments
           </CardDescription>
         </CardHeader>
-        <CardContent className="h-full">
-          <SequenceInput
-            departmentCount={departments.length}
-            sequence={sequence}
-            relMatrix={relMatrix}
-            departmentAreas={departmentAreas}
-            onChange={onSequenceChange}
-          />
+        <CardContent>
+          <div className="w-full overflow-x-auto">
+            <SequenceInput
+              departmentCount={departments.length}
+              sequence={sequence}
+              relMatrix={relMatrix}
+              departmentAreas={departmentAreas}
+              onChange={onSequenceChange}
+            />
+          </div>
         </CardContent>
       </Card>
 
-      <Card className="h-full">
+      {/* Department Grid Section - Below Sequence */}
+      <Card className="w-full">
         <CardHeader>
-          <CardTitle className="text-xl font-bold text-gray-900">Department Grid Assignment</CardTitle>
+          <CardTitle className="text-xl font-bold text-gray-900">Department Grid</CardTitle>
           <CardDescription className="text-base font-medium text-gray-700">
             Grid allocation based on department areas
           </CardDescription>

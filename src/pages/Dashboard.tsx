@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -303,9 +302,8 @@ const Dashboard = () => {
           />
           
           {/* Action Buttons */}
-          <div className="flex justify-between">
-            <Button variant="outline" onClick={handleReset}>
-              Reset All
+          <div className="flex justify-between">            <Button variant="outline" onClick={handleReset}>
+              Entry Data
             </Button>
             <div className="flex gap-2">
               {resultsVisible && (
@@ -323,10 +321,7 @@ const Dashboard = () => {
           </div>
           
           {/* Results Section */}
-          {resultsVisible && (
-            <div className="mt-4 space-y-8">
-              <h2 className="text-xl font-semibold">Layout Analysis Results</h2>
-
+          {resultsVisible && (            <div className="mt-4 space-y-8">
               <ResultsDisplay
                 departments={departments.map(d => d.name)}
                 relMatrix={relMatrix}
@@ -338,8 +333,8 @@ const Dashboard = () => {
                 onSequenceChange={setSequence}
               />
 
-              {/* Optimization Button - Centered below the results */}
-              <div className="flex justify-center mt-8">
+              {/* Optimization Button - Aligned with other buttons */}
+              <div className="flex justify-end">
                 <OptimizationButton
                   departments={departments}
                   relMatrix={relMatrix}
