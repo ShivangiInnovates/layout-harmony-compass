@@ -73,13 +73,6 @@ export function OptimizationResults({
                 Optimization Score: {result.bestScore.toFixed(2)}
               </div>
               
-              <div>
-                <h3 className="text-lg font-medium mb-2">Optimal Department Sequence:</h3>
-                <div className="bg-muted p-3 rounded-md">
-                  {result.bestSequence.join(' → ')}
-                </div>
-              </div>
-              
               {result.plotImage && (
                 <div>
                   <h3 className="text-lg font-medium mb-2">Optimized Layout:</h3>
