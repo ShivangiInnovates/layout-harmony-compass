@@ -2,8 +2,12 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
-import { Player } from 'lottie-react';
-// TODO: Replace with actual Lottie JSON file path or URL (placeholder animation omitted)
+// Using lottie-react for an optional hero illustration. If animation JSON not provided, nothing renders.
+import Lottie from 'lottie-react';
+// TODO: Replace with actual imported animation JSON, e.g.:
+// import animationData from '@/assets/hero-animation.json';
+// Placeholder (undefined) keeps component lightweight until real asset added.
+const animationData: any = undefined;
 
 const words = ['Layout', 'complexity', '—', 'refined.'];
 
@@ -67,13 +71,12 @@ const Hero = () => {
         <div className="relative w-full max-w-lg">
           <div className="aspect-square rounded-3xl bg-gradient-to-br from-sky-200 via-white to-indigo-200 dark:from-slate-800 dark:via-slate-900 dark:to-slate-800 shadow-inner flex items-center justify-center overflow-hidden ring-1 ring-sky-300/30 dark:ring-slate-700/50">
             {/* Placeholder Lottie - instruct dev to replace */}
-            {mounted && (
-              <Player
-                autoplay
+            {mounted && animationData && (
+              <Lottie
+                animationData={animationData}
                 loop
-                // @ts-ignore placeholder until replaced
-                src={undefined}
-                style={{ height: '70%', width: '70%', opacity: 0.4 }}
+                style={{ height: '70%', width: '70%', opacity: 0.9 }}
+                aria-label="Animated illustration"
               />
             )}
           </div>

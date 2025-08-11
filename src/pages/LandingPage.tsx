@@ -2,13 +2,13 @@
 // Purpose: Replace old Home page with modern, animated, accessible landing experience.
 
 import { motion, useReducedMotion } from 'framer-motion';
-import NavBar from '@/components/NavBar';
-import Hero from '@/components/Hero';
-import FeaturesGrid from '@/components/FeaturesGrid';
-import BlogPreviewGrid from '@/components/BlogPreviewGrid';
-import TestimonialCarousel from '@/components/TestimonialCarousel';
-import PricingCTA from '@/components/PricingCTA';
-import Footer from '@/components/Footer';
+import NavBar from '../components/NavBar';
+import Hero from '../components/Hero';
+import FeaturesGrid from '../components/FeaturesGrid';
+import BlogPreviewGrid from '../components/BlogPreviewGrid';
+import TestimonialCarousel from '../components/TestimonialCarousel';
+import PricingCTA from '../components/PricingCTA';
+import Footer from '../components/Footer';
 
 const LandingPage = () => {
   const prefersReducedMotion = useReducedMotion();
