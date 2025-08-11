@@ -1,0 +1,10 @@
+/* animations.css - custom keyframes & prefers-reduced-motion fallbacks */
+@keyframes cloud-float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-18px);} }
+@keyframes cloud-float-slow { 0%,100% { transform: translateY(0px);} 50% { transform: translateY(-28px);} }
+
+.animate-cloud-float { animation: cloud-float 11s ease-in-out infinite; }
+.animate-cloud-float-slow { animation: cloud-float-slow 18s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-cloud-float, .animate-cloud-float-slow { animation: none; }
+}

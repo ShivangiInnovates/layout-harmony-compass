@@ -92,3 +92,25 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+
+## New Animated Marketing Landing Page
+
+The legacy `Home` page has been replaced with a new animated landing experience (`src/pages/LandingPage.tsx`). Key components live in `src/components/`:
+- `NavBar.tsx`, `Hero.tsx`, `FeaturesGrid.tsx`, `BlogPreviewGrid.tsx`, `TestimonialCarousel.tsx`, `PricingCTA.tsx`, `Footer.tsx`.
+
+Technologies:
+- Tailwind CSS utilities + custom keyframes in `src/styles/animations.css`
+- Framer Motion for stagger, scroll, and carousel transitions
+- Lottie (placeholder in Hero – replace with actual JSON asset)
+
+Install any new dependencies (if not already present):
+```
+npm i framer-motion lottie-react @headlessui/react
+```
+Then run the dev server:
+```
+npm run dev
+```
+
+Add analytics (GA / Plausible / Simple Analytics) inside `index.html` where the placeholder comment is located.
+
