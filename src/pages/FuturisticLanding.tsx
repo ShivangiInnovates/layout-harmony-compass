@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ShieldCheck, UserRound, Star, ExternalLink, ClockIcon, Factory, Cpu, Settings, TrendingUp, Zap, Target, BarChart3, Users, Globe, ArrowRight, Play, Sparkles, Grid3X3, Brain, Rocket, Shield, Award, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import ThemeToggle from "@/components/ThemeToggle";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 
 const FuturisticLanding = () => {
@@ -24,9 +23,9 @@ const FuturisticLanding = () => {
   const heroY = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.3]);
   
-  const isStatsInView = useInView(statsRef, { once: true, threshold: 0.3 });
-  const isFeaturesInView = useInView(featuresRef, { once: true, threshold: 0.3 });
-  const isCtaInView = useInView(ctaRef, { once: true, threshold: 0.3 });
+  const isStatsInView = useInView(statsRef, { once: true, amount: 0.3 });
+  const isFeaturesInView = useInView(featuresRef, { once: true, amount: 0.3 });
+  const isCtaInView = useInView(ctaRef, { once: true, amount: 0.3 });
 
   // Redirect authenticated users to their appropriate dashboard
   useEffect(() => {
@@ -205,7 +204,6 @@ const FuturisticLanding = () => {
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <ThemeToggle />
             {isAuthenticated ? (
               <Button 
                 onClick={() => navigate(isAdmin ? "/admin" : "/dashboard")}
@@ -322,7 +320,7 @@ const FuturisticLanding = () => {
             >
               <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">
                 <Sparkles className="h-4 w-4 text-cyan-400" />
-                <span className="text-sm text-white/80">AI-Powered Layout Optimization</span>
+                <span className="text-sm text-white/80">Smart Plan</span>
               </div>
             </motion.div>
 
@@ -410,6 +408,10 @@ const FuturisticLanding = () => {
           transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
         >
           <div className="relative">
+            {/* Smart Plan label above the image */}
+            <div className="absolute -top-6 left-1/2 -translate-x-1/2 px-4 py-1 bg-blue-500 text-white rounded-full text-xs font-semibold shadow-lg z-10">
+              Smart Plan
+            </div>
             <div className="w-64 h-64 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 rounded-2xl border border-white/20 backdrop-blur-sm transform rotate-12" />
             <div className="absolute inset-0 w-64 h-64 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-2xl border border-white/20 backdrop-blur-sm transform -rotate-6" />
             <div className="absolute inset-0 w-64 h-64 bg-gradient-to-br from-purple-500/20 to-cyan-600/20 rounded-2xl border border-white/20 backdrop-blur-sm transform rotate-3" />
@@ -519,7 +521,7 @@ const FuturisticLanding = () => {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
-        viewport={{ once: true, threshold: 0.3 }}
+        viewport={{ once: true, amount: 0.3 }}
       >
         <div className="container">
           <motion.div 
@@ -527,7 +529,7 @@ const FuturisticLanding = () => {
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true, threshold: 0.3 }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               <span className="bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">
@@ -544,7 +546,7 @@ const FuturisticLanding = () => {
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, staggerChildren: 0.1 }}
-            viewport={{ once: true, threshold: 0.3 }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             {articles.map((article, index) => (
               <motion.div
@@ -552,7 +554,7 @@ const FuturisticLanding = () => {
                 initial={{ y: 50, opacity: 0 }}
                 whileInView={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true, threshold: 0.3 }}
+                viewport={{ once: true, amount: 0.3 }}
                 whileHover={{ y: -5 }}
               >
                 <Card className="overflow-hidden transition-all hover:shadow-2xl bg-white/5 backdrop-blur-sm border-white/20 hover:bg-white/10 hover:border-white/30">
@@ -589,7 +591,7 @@ const FuturisticLanding = () => {
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            viewport={{ once: true, threshold: 0.3 }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             <Button 
               variant="outline" 
@@ -675,7 +677,7 @@ const FuturisticLanding = () => {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
-        viewport={{ once: true, threshold: 0.3 }}
+        viewport={{ once: true, amount: 0.3 }}
       >
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">

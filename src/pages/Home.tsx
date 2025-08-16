@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ShieldCheck, UserRound, Star, ExternalLink, ClockIcon, Factory, Cpu, Settings, TrendingUp, Zap, Target, BarChart3, Users, Globe, ArrowRight, Play, Sparkles, Grid3X3, Brain, Rocket, Shield, Award, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import ThemeToggle from "@/components/ThemeToggle";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 
 const Home = () => {
@@ -25,9 +24,9 @@ const Home = () => {
   const heroY = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.3]);
   
-  const isStatsInView = useInView(statsRef, { once: true, threshold: 0.3 });
-  const isFeaturesInView = useInView(featuresRef, { once: true, threshold: 0.3 });
-  const isCtaInView = useInView(ctaRef, { once: true, threshold: 0.3 });
+  const isStatsInView = useInView(statsRef, { once: true, amount: 0.3 });
+  const isFeaturesInView = useInView(featuresRef, { once: true, amount: 0.3 });
+  const isCtaInView = useInView(ctaRef, { once: true, amount: 0.3 });
 
   // Redirect authenticated users to their appropriate dashboard
   useEffect(() => {
@@ -216,7 +215,6 @@ const Home = () => {
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 1.2, delay: 0.6 }}
           >
-            <ThemeToggle />
             {isAuthenticated ? (
               <Button 
                 onClick={() => navigate(isAdmin ? "/admin" : "/dashboard")}
@@ -231,12 +229,12 @@ const Home = () => {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      className="border-white/20 text-white hover:bg-white/10 hover:border-white/40 transition-all duration-300"
+                      className="border-white/40 text-white hover:bg-white/20 hover:border-white/60 bg-white/5 transition-all duration-300"
                     >
                       Login
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px] bg-slate-900/95 border-white/20 backdrop-blur-xl">
+                  <DialogContent className="sm:max-w-[425px] bg-slate-900/95 border-white/20 backdrop-blur-xl [&_[data-radix-dialog-close]]:text-white [&_[data-radix-dialog-close]]:opacity-80 [&_[data-radix-dialog-close]:hover]:opacity-100 [&_[data-radix-dialog-close]:hover]:bg-white/10">
                     <DialogHeader>
                       <DialogTitle className="text-white">Choose Login Option</DialogTitle>
                     </DialogHeader>
@@ -278,7 +276,7 @@ const Home = () => {
                             </p>
                             <div className="flex justify-center">
                               <Link to="/admin-login" onClick={() => setIsLoginDialogOpen(false)}>
-                                <Button variant="outline" size="sm" className="w-full border-white/20 text-white hover:bg-white/10">Login as Admin</Button>
+                                <Button variant="outline" size="sm" className="w-full border-white/40 text-white hover:bg-white/20 hover:border-white/60 bg-slate-800/30">Login as Admin</Button>
                               </Link>
                             </div>
                           </div>
@@ -394,7 +392,7 @@ const Home = () => {
                 <Button 
                   variant="outline" 
                   size="lg"
-                  className="border-white/30 text-white hover:bg-white/10 hover:border-white/50 text-lg px-8 py-6 transition-all duration-300 group"
+                  className="border-white/40 text-white hover:bg-white/20 hover:border-white/60 text-lg px-8 py-6 transition-all duration-300 group bg-white/5"
                 >
                   <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
                   Watch Demo
@@ -454,7 +452,7 @@ const Home = () => {
                         transition={{ duration: 0.8, delay: 2.0, ease: "backOut" }}
                         className="absolute -top-4 -right-4 bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg border border-white/20"
                       >
-                        AI-Powered
+                        Smart Planner
                       </motion.div>
                     </div>
                   </div>
@@ -522,7 +520,7 @@ const Home = () => {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 1.2 }}
-        viewport={{ once: true, threshold: 0.3 }}
+        viewport={{ once: true, amount: 0.3 }}
       >
         <div className="container">
           <motion.div 
@@ -530,7 +528,7 @@ const Home = () => {
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 1.2 }}
-            viewport={{ once: true, threshold: 0.3 }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               <span className="bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">
@@ -547,7 +545,7 @@ const Home = () => {
               initial={{ x: -50, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
               transition={{ duration: 1.2 }}
-              viewport={{ once: true, threshold: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
             >
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
@@ -586,7 +584,7 @@ const Home = () => {
               initial={{ x: 50, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
               transition={{ duration: 1.2, delay: 0.3 }}
-              viewport={{ once: true, threshold: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
               className="relative"
             >
               <div className="bg-gradient-to-br from-cyan-500/20 to-blue-600/20 backdrop-blur-sm border border-white/20 rounded-3xl p-8">
@@ -716,7 +714,7 @@ const Home = () => {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 1.2 }}
-        viewport={{ once: true, threshold: 0.3 }}
+        viewport={{ once: true, amount: 0.3 }}
       >
         <div className="container">
           <motion.div 
@@ -724,7 +722,7 @@ const Home = () => {
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 1.2 }}
-            viewport={{ once: true, threshold: 0.3 }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               <span className="bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">
@@ -742,7 +740,7 @@ const Home = () => {
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ duration: 1.0 }}
-              viewport={{ once: true, threshold: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
               whileHover={{ y: -10 }}
               className="group"
             >
@@ -781,7 +779,7 @@ const Home = () => {
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ duration: 1.0, delay: 0.2 }}
-              viewport={{ once: true, threshold: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
               whileHover={{ y: -10 }}
               className="group"
             >
@@ -829,7 +827,7 @@ const Home = () => {
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ duration: 1.0, delay: 0.4 }}
-              viewport={{ once: true, threshold: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
               whileHover={{ y: -10 }}
               className="group"
             >
@@ -876,7 +874,7 @@ const Home = () => {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
-        viewport={{ once: true, threshold: 0.3 }}
+        viewport={{ once: true, amount: 0.3 }}
       >
         <div className="container">
           <motion.div 
@@ -884,7 +882,7 @@ const Home = () => {
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true, threshold: 0.3 }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               <span className="bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">
@@ -901,7 +899,7 @@ const Home = () => {
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, staggerChildren: 0.1 }}
-            viewport={{ once: true, threshold: 0.3 }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             {articles.map((article, index) => (
               <motion.div
@@ -909,7 +907,7 @@ const Home = () => {
                 initial={{ y: 50, opacity: 0 }}
                 whileInView={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true, threshold: 0.3 }}
+                viewport={{ once: true, amount: 0.3 }}
                 whileHover={{ y: -5 }}
               >
                 <Card className="overflow-hidden transition-all hover:shadow-2xl bg-white/5 backdrop-blur-sm border-white/20 hover:bg-white/10 hover:border-white/30">
@@ -946,7 +944,7 @@ const Home = () => {
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            viewport={{ once: true, threshold: 0.3 }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             <Button 
               variant="outline" 
@@ -966,7 +964,7 @@ const Home = () => {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 1.2 }}
-        viewport={{ once: true, threshold: 0.3 }}
+        viewport={{ once: true, amount: 0.3 }}
       >
         <div className="container">
           <motion.div 
@@ -974,7 +972,7 @@ const Home = () => {
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 1.2 }}
-            viewport={{ once: true, threshold: 0.3 }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               <span className="bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">
@@ -992,7 +990,7 @@ const Home = () => {
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ duration: 1.0 }}
-              viewport={{ once: true, threshold: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
               whileHover={{ y: -5 }}
               className="group"
             >
@@ -1013,7 +1011,7 @@ const Home = () => {
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ duration: 1.0, delay: 0.2 }}
-              viewport={{ once: true, threshold: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
               whileHover={{ y: -5 }}
               className="group"
             >
@@ -1034,7 +1032,7 @@ const Home = () => {
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ duration: 1.0, delay: 0.4 }}
-              viewport={{ once: true, threshold: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
               whileHover={{ y: -5 }}
               className="group"
             >
@@ -1044,7 +1042,7 @@ const Home = () => {
                 </div>
                 <h3 className="text-xl font-bold text-white mb-4">Video Tutorials</h3>
                 <p className="text-white/70 text-sm mb-6">Step-by-step video tutorials covering all aspects of the platform from basic to advanced features.</p>
-                <Button variant="outline" className="w-full border-white/30 text-white hover:bg-white/10 hover:border-white/50">
+                <Button variant="outline" className="w-full border-white/40 text-white hover:bg-white/20 hover:border-white/60 bg-white/5">
                   Watch Videos
                 </Button>
               </div>
@@ -1055,7 +1053,7 @@ const Home = () => {
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ duration: 1.0, delay: 0.6 }}
-              viewport={{ once: true, threshold: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
               whileHover={{ y: -5 }}
               className="group"
             >
@@ -1076,7 +1074,7 @@ const Home = () => {
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ duration: 1.0, delay: 0.8 }}
-              viewport={{ once: true, threshold: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
               whileHover={{ y: -5 }}
               className="group"
             >
@@ -1097,7 +1095,7 @@ const Home = () => {
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              viewport={{ once: true, threshold: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
               whileHover={{ y: -5 }}
               className="group"
             >
@@ -1123,7 +1121,7 @@ const Home = () => {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 1.2 }}
-        viewport={{ once: true, threshold: 0.3 }}
+        viewport={{ once: true, amount: 0.3 }}
       >
         <div className="container">
           <motion.div 
@@ -1131,7 +1129,7 @@ const Home = () => {
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ duration: 1.2 }}
-            viewport={{ once: true, threshold: 0.3 }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold mb-6">
               <span className="bg-gradient-to-r from-white to-cyan-300 bg-clip-text text-transparent">
@@ -1149,7 +1147,7 @@ const Home = () => {
               initial={{ x: -50, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
               transition={{ duration: 1.2 }}
-              viewport={{ once: true, threshold: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
             >
               <div className="bg-white/5 backdrop-blur-sm border border-white/20 rounded-3xl p-8">
                 <h3 className="text-2xl font-bold text-white mb-6">Send us a message</h3>
@@ -1208,7 +1206,7 @@ const Home = () => {
               initial={{ x: 50, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
               transition={{ duration: 1.2, delay: 0.3 }}
-              viewport={{ once: true, threshold: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
             >
               <div className="space-y-8">
                 <div>
@@ -1344,7 +1342,7 @@ const Home = () => {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
-        viewport={{ once: true, threshold: 0.3 }}
+        viewport={{ once: true, amount: 0.3 }}
       >
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
