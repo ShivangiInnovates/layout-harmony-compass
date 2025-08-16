@@ -5,15 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ShieldCheck, UserRound, Star, ExternalLink, ClockIcon, Factory, Cpu, Settings, TrendingUp, Zap, Target, BarChart3, Users, Globe, ArrowRight, Play, Sparkles, Grid3X3, Brain, Rocket, Shield, Award, CheckCircle } from "lucide-react";
+import { Star, ExternalLink, ClockIcon, Factory, Cpu, Settings, TrendingUp, Zap, Target, BarChart3, Users, Globe, ArrowRight, Play, Sparkles, Grid3X3, Brain, Rocket, Shield, Award, CheckCircle } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 
 const Home = () => {
   const { isAuthenticated, isAdmin } = useAuth();
   const navigate = useNavigate();
-  const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const heroRef = useRef(null);
   const statsRef = useRef(null);
@@ -224,75 +222,15 @@ const Home = () => {
               </Button>
             ) : (
               <div className="flex gap-3">
-                <Dialog open={isLoginDialogOpen} onOpenChange={setIsLoginDialogOpen}>
-                  <DialogTrigger asChild>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="border-white/40 text-white hover:bg-white/20 hover:border-white/60 bg-white/5 transition-all duration-300"
-                    >
-                      Login
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px] bg-slate-900/95 border-white/20 backdrop-blur-xl [&_[data-radix-dialog-close]]:text-white [&_[data-radix-dialog-close]]:opacity-80 [&_[data-radix-dialog-close]:hover]:opacity-100 [&_[data-radix-dialog-close]:hover]:bg-white/10">
-                    <DialogHeader>
-                      <DialogTitle className="text-white">Choose Login Option</DialogTitle>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      {/* User Login Card */}
-                      <Card className="overflow-hidden transition-all hover:shadow-lg bg-slate-800/50 border-white/20">
-                        <CardContent className="p-0">
-                          <div className="bg-gradient-to-br from-cyan-500 to-blue-600 text-white p-4">
-                            <div className="flex justify-center mb-2">
-                              <UserRound size={36} />
-                            </div>
-                            <h3 className="text-lg font-bold text-center">User Login</h3>
-                          </div>
-                          <div className="p-4">
-                            <p className="text-sm text-center mb-3 text-white/70">
-                              Access your personal dashboard to create and analyze department layouts
-                            </p>
-                            <div className="flex justify-center">
-                              <Link to="/user-login" onClick={() => setIsLoginDialogOpen(false)}>
-                                <Button size="sm" className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700">Login as User</Button>
-                              </Link>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      {/* Admin Login Card */}
-                      <Card className="overflow-hidden transition-all hover:shadow-lg bg-slate-800/50 border-white/20">
-                        <CardContent className="p-0">
-                          <div className="bg-gradient-to-br from-slate-700 to-slate-900 text-white p-4">
-                            <div className="flex justify-center mb-2">
-                              <ShieldCheck size={36} />
-                            </div>
-                            <h3 className="text-lg font-bold text-center">Admin Login</h3>
-                          </div>
-                          <div className="p-4">
-                            <p className="text-sm text-center mb-3 text-white/70">
-                              Access administrative tools to view and manage user submissions
-                            </p>
-                            <div className="flex justify-center">
-                              <Link to="/admin-login" onClick={() => setIsLoginDialogOpen(false)}>
-                                <Button variant="outline" size="sm" className="w-full border-white/40 text-white hover:bg-white/20 hover:border-white/60 bg-slate-800/30">Login as Admin</Button>
-                              </Link>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-
-                      <div className="text-center text-xs text-white/50">
-                        <p>
-                          Demo Credentials<br />
-                          Admin: admin@example.com / admin123<br />
-                          User: user@example.com / user123
-                        </p>
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                <Link to="/user-login">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="border-white/40 text-white hover:bg-white/20 hover:border-white/60 bg-white/5 transition-all duration-300"
+                  >
+                    Login
+                  </Button>
+                </Link>
                 <Link to="/register">
                   <Button 
                     size="sm"
