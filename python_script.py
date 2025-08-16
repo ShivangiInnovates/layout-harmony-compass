@@ -395,7 +395,7 @@ def run_facility_layout_optimization(department_areas_info, relationship_definit
         tuple: (best_layout_sequence, best_layout_positions, best_score, score_history_list)
                or (None, None, -np.inf, []) if no solution is found.
     """
-    print("=== Facility Layout Optimization Started ===")
+    print("=== SmartGrid PlannerX Layout Optimization Started ===")
 
     # 1. Process Department Info
     dept_list_names = list(department_areas_info.keys())

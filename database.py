@@ -19,7 +19,7 @@ class Database:
         """Connect to MongoDB Atlas"""
         try:
             mongodb_uri = os.getenv('MONGODB_URI')
-            database_name = os.getenv('DATABASE_NAME', 'layout_optimization_db')
+            database_name = os.getenv('DATABASE_NAME', 'smartgrid_plannerx_db')
             
             if not mongodb_uri:
                 raise ValueError("MONGODB_URI not found in environment variables")

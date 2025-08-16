@@ -267,7 +267,7 @@ const Dashboard = () => {
       {/* Header */}
       <header className="bg-card border-b">
         <div className="container py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-primary">Layout Harmony Compass</h1>
+          <h1 className="text-2xl font-bold text-primary">SmartGrid PlannerX</h1>
           <div className="flex items-center gap-4">
             <div className="text-right">
               <div className="font-medium">{user?.name || user?.email}</div>

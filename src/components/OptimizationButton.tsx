@@ -48,7 +48,7 @@ export function OptimizationButton({
       </DialogTrigger>
       <DialogContent className="max-w-4xl">
         <DialogHeader>
-          <DialogTitle>Layout Optimization with Machine Learning</DialogTitle>
+          <DialogTitle>SmartGrid Layout Optimization with Machine Learning</DialogTitle>
           <DialogDescription>
             Generate an optimized facility layout using a genetic algorithm based on your departments and relationships.
           </DialogDescription>

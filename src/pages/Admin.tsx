@@ -239,7 +239,7 @@ const Admin = () => {
         <div className="container py-4 flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-primary">Admin Dashboard</h1>
-            <p className="text-muted-foreground text-sm">Layout Harmony Compass</p>
+            <p className="text-muted-foreground text-sm">SmartGrid PlannerX</p>
           </div>
           <div className="flex items-center gap-4">
             <div className="text-right">
